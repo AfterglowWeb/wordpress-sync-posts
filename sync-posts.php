@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Sync Posts
  * Description: Syncs posts from another WordPress site using REST API. Syncs posts, media, and taxonomies. Downloads media and create featured images. Supports custom post types and taxonomies. Sync from a custom date or all posts.
- * Version: 1.0.5
+ * Version: 1.0.7
  * Author: Cédric Moris Kelly
  * Author URI: http://moriskelly.com
  * License: GPL-3.0-or-later
@@ -422,11 +422,12 @@ class SyncPosts {
         }
     }
     
-    private function sync_featured_image($media_id, $post_id, $source_url, $api_endpoint) {
-        $request_url = $source_url . 'wp-json/sync-posts/public-media/' . $media_id;
+    private function sync_featured_image($media_id, $post_id, $source_url) {
+        $request_url = $source_url . 'wp-json/sync-posts/v1/public-media/' . $media_id;
         $response = wp_remote_get($request_url);
         
         if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            error_log('Error fetching media: ' . wp_remote_retrieve_response_code($response));
             return false;
         }
         
